@@ -1,0 +1,5 @@
+docker-compose up -d
+docker run --name keycloak-graphql -p 8082:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:21.0.0 start-dev
+ http://localhost:8082/
+Username: admin
+Password: admin
