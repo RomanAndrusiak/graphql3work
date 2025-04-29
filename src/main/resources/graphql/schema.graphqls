@@ -1,7 +1,54 @@
-schema {
-    query: Query
+scalar Email
+
+type Car {
+    id: ID!
+    model: String!
+    year: Int!
+    color: String!
+    owner: Owner
+}
+
+type Owner {
+    id: ID!
+    name: String!
+    email: Email!
+    phone: String
+    cars: [Car]
+}
+
+input CarInput {
+    model: String!
+    year: Int!
+    color: String!
+    ownerId: ID!
+}
+
+input OwnerInput {
+    name: String!
+    email: Email!
+    phone: String
 }
 
 type Query {
     hello: String
+    cars: [Car]
+    carById(id: ID!): Car
+    owners: [Owner]
+    ownerById(id: ID!): Owner
+    weatherByLocation(location: String!): String
+}
+
+type Mutation {
+    createCar(input: CarInput!): Car
+    updateCar(id: ID!, input: CarInput!): Car
+    deleteCar(id: ID!): Boolean
+
+    createOwner(input: OwnerInput!): Owner
+    updateOwner(id: ID!, input: OwnerInput!): Owner
+    deleteOwner(id: ID!): Boolean
+}
+
+schema {
+    query: Query
+    mutation: Mutation
 }
