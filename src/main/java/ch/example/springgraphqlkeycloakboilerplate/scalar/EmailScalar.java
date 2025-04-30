@@ -1,5 +1,6 @@
 package ch.example.springgraphqlkeycloakboilerplate.scalar;
 
+import graphql.language.StringValue;
 import graphql.schema.Coercing;
 import graphql.schema.CoercingParseLiteralException;
 import graphql.schema.CoercingParseValueException;
@@ -54,11 +55,14 @@ public class EmailScalar {
 
                     @Override
                     public String parseLiteral(Object input) throws CoercingParseLiteralException {
-                        String email = String.valueOf(input);
-                        if (EMAIL_PATTERN.matcher(email).matches()) {
-                            return email;
+                        if (input instanceof StringValue) {
+                            String email = ((StringValue) input).getValue();
+                            if (EMAIL_PATTERN.matcher(email).matches()) {
+                                return email;
+                            }
+                            throw new CoercingParseLiteralException("Invalid email address format: " + email);
                         }
-                        throw new CoercingParseLiteralException("Invalid email address format: " + email);
+                        throw new CoercingParseLiteralException("Expected a StringValue");
                     }
                 })
                 .build();

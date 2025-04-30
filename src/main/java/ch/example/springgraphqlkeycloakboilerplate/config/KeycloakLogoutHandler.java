@@ -24,16 +24,10 @@ public class KeycloakLogoutHandler implements LogoutHandler {
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        // Convert principal to OidcUser
         OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
-
-        // Get the logout URL from the OidcUser
         String logoutUrl = oidcUser.getIssuer() + "/protocol/openid-connect/logout";
-
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(logoutUrl)
                 .queryParam("id_token_hint", oidcUser.getIdToken().getTokenValue());
-
-        // Call the logout URL
         ResponseEntity<String> logoutResponse = restTemplate.getForEntity(builder.toUriString(), String.class);
         if (logoutResponse.getStatusCode().is2xxSuccessful()) {
             logger.info("[!] User successfully logged out from Keycloak");
