@@ -29,22 +29,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // Setup OAuth2 login
         http.oauth2Login(Customizer.withDefaults())
                 .logout(logout -> logout
                         .addLogoutHandler(keycloakLogoutHandler)
                         .logoutSuccessUrl("/"));
-
-        // Відключаємо CSRF для GraphQL запитів, оскільки вони часто надходять з інтерфейсу GraphiQL
         http.csrf(csrf -> csrf
                 .ignoringRequestMatchers(new AntPathRequestMatcher("/graphql/**"),
                         new AntPathRequestMatcher("/graphiql/**")));
-
-        // Setup authorization - важливо дозволити доступ до GraphQL і GraphiQL
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/graphiql/**").permitAll() // Дозволяємо доступ до GraphiQL інтерфейсу
-                .requestMatchers("/graphql/**").authenticated() // До GraphQL API тільки після автентифікації
+                .requestMatchers("/graphiql/**").permitAll()
+                .requestMatchers("/graphql/**").authenticated()
                 .anyRequest().authenticated());
 
         return http.build();

@@ -1,5 +1,6 @@
 package ch.example.springgraphqlkeycloakboilerplate.resolver;
 
+import ch.example.springgraphqlkeycloakboilerplate.dto.CarDTO;
 import ch.example.springgraphqlkeycloakboilerplate.dto.OwnerDTO;
 import ch.example.springgraphqlkeycloakboilerplate.dto.OwnerInput;
 import ch.example.springgraphqlkeycloakboilerplate.entity.Car;
@@ -77,6 +78,21 @@ public class OwnerResolver {
         }
         ownerRepository.deleteById(id);
         return true;
+    }
+    @SchemaMapping(typeName = "Owner", field = "cars")
+    public List<CarDTO> getCars(OwnerDTO owner) {
+        Owner ownerEntity = ownerRepository.findById(owner.getId())
+                .orElseThrow(() -> new GraphQLException("Owner not found with id: " + owner.getId()));
+
+        return ownerEntity.getCars().stream()
+                .map(car -> new CarDTO(
+                        car.getId(),
+                        car.getModel(),
+                        car.getYear(),
+                        car.getColor(),
+                        ownerEntity.getId()
+                ))
+                .collect(Collectors.toList());
     }
 
     private OwnerDTO mapToDTO(Owner owner) {
