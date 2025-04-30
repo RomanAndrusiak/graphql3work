@@ -35,7 +35,7 @@ type Query {
     carById(id: ID!): Car
     owners: [Owner]
     ownerById(id: ID!): Owner
-    weatherByLocation(location: String!): String
+    users: [User]
 }
 
 type Mutation {
@@ -47,7 +47,13 @@ type Mutation {
     updateOwner(id: ID!, input: OwnerInput!): Owner
     deleteOwner(id: ID!): Boolean
 }
-
+type User {
+    id: Int!
+    username: String!
+    email: Email!
+    role: String!
+    isEnable: Boolean!
+}
 schema {
     query: Query
     mutation: Mutation
