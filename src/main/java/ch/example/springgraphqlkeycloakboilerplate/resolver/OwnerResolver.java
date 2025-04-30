@@ -7,7 +7,7 @@ import ch.example.springgraphqlkeycloakboilerplate.entity.Car;
 import ch.example.springgraphqlkeycloakboilerplate.entity.Owner;
 import ch.example.springgraphqlkeycloakboilerplate.exception.GraphQLException;
 import ch.example.springgraphqlkeycloakboilerplate.repository.OwnerRepository;
-import ch.example.springgraphqlkeycloakboilerplate.service.WeatherService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -19,16 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@RequiredArgsConstructor
 public class OwnerResolver {
 
     private final OwnerRepository ownerRepository;
-    private final WeatherService weatherService;
 
-    @Autowired
-    public OwnerResolver(OwnerRepository ownerRepository, WeatherService weatherService) {
-        this.ownerRepository = ownerRepository;
-        this.weatherService = weatherService;
-    }
 
     @QueryMapping
     public List<OwnerDTO> owners() {
@@ -44,10 +39,6 @@ public class OwnerResolver {
                 .orElseThrow(() -> new GraphQLException("Owner not found with id: " + id));
     }
 
-    @QueryMapping
-    public String weatherByLocation(@Argument String location) {
-        return weatherService.getWeatherForLocation(location);
-    }
 
     @MutationMapping
     public OwnerDTO createOwner(@Argument OwnerInput input) {
